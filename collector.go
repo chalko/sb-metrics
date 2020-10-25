@@ -88,7 +88,7 @@ func parseDs(table *goquery.Selection) []DownStatus {
 			mod:    text(cells, 2),
 			freq:   freq(text(cells, 3)),
 			power:  float(text(cells, 4)," dBmV"),
-			snr:    float(text(cells, 4)," dB"),
+			snr:    float(text(cells, 5)," dB"),
 			corr:   corr(text(cells, 6)),
 			uncorr: corr(text(cells, 7)),
 		}
