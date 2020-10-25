@@ -16,7 +16,7 @@ type CableModemCollector struct {
 type ModemStatus struct {
 	startup StartupStatus
 	ds      []DownStatus
-	us []UpStatus
+	us      []UpStatus
 }
 type StartupStatus struct {
 	bootState string
@@ -34,11 +34,11 @@ type DownStatus struct {
 }
 
 type UpStatus struct {
-	num     string
-	id   string
-	lock    string
+	num    string
+	id     string
+	lock   string
 	chtype string
-	width int
+	width  int
 	freq   int
 	power  float64
 }
@@ -56,11 +56,9 @@ func scrape(reader io.Reader) ModemStatus {
 	return ModemStatus{
 		startup: parseStartupStatus(startup),
 		ds:      parseDs(ds),
-		us: parseUs(us),
+		us:      parseUs(us),
 	}
 }
-
-
 
 // Procedure Status Comment
 type Psc struct {
@@ -102,8 +100,8 @@ func parseDs(table *goquery.Selection) []DownStatus {
 			lock:   text(cells, 1),
 			mod:    text(cells, 2),
 			freq:   hz(text(cells, 3)),
-			power:  float(text(cells, 4)," dBmV"),
-			snr:    float(text(cells, 5)," dB"),
+			power:  float(text(cells, 4), " dBmV"),
+			snr:    float(text(cells, 5), " dB"),
 			corr:   corr(text(cells, 6)),
 			uncorr: corr(text(cells, 7)),
 		}
@@ -123,12 +121,11 @@ func parseUs(table *goquery.Selection) []UpStatus {
 			chtype: text(cells, 3),
 			width:  hz(text(cells, 4)),
 			freq:   hz(text(cells, 5)),
-			power:  float(text(cells, 6)," dBmV"),
+			power:  float(text(cells, 6), " dBmV"),
 		}
 	})
 	return us
 }
-
 
 func corr(s string) int {
 	i, err := strconv.Atoi(s)
@@ -140,7 +137,7 @@ func corr(s string) int {
 }
 
 func float(s string, suffix string) float64 {
-	f, err := strconv.ParseFloat(strings.TrimSuffix(s,suffix), 64)
+	f, err := strconv.ParseFloat(strings.TrimSuffix(s, suffix), 64)
 	if err != nil {
 		return math.NaN()
 	}
@@ -148,7 +145,7 @@ func float(s string, suffix string) float64 {
 }
 
 func hz(s string) int {
-	i, err := strconv.Atoi(strings.TrimSuffix(s," Hz"))
+	i, err := strconv.Atoi(strings.TrimSuffix(s, " Hz"))
 	if err != nil {
 		return 0
 	}
