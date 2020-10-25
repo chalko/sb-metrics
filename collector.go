@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/prometheus/client_golang/prometheus"
-	"golang.org/x/net/html"
 	"io"
 	"log"
 )
@@ -24,7 +23,7 @@ func scrape(reader io.Reader) ModemStatus {
 		log.Fatal(err)
 	}
 	tables := doc.Find("table")
-    startup := tables.Get(0)
+    startup := tables.Filter("table:has(th:contains('Startup Procedure'))")
     startupStatus := parseStartupStatus(startup)
     log.Print(startupStatus)
 
@@ -39,10 +38,9 @@ type Psc struct {
 	c string
 
 }
-func parseStartupStatus(table *html.Node) StartupStatus {
-	doc := goquery.NewDocumentFromNode(table)
+func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	m := make(map[string]Psc)
-	doc.Find("tr:has(td)") .Each(func(i int, s *goquery.Selection) {
+	table.Find("tr:has(td)") .Each(func(i int, s *goquery.Selection) {
 		log.Print(s.Html())
 		cells := s.Find("td")
 		psc := Psc{
