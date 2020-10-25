@@ -14,9 +14,11 @@ func TestScrape(t *testing.T) {
 		log.Fatal(err)
 	}
 	ans := scrape(reader)
-	assert.Equal(t, ModemStatus{
-		startup: StartupStatus{bootState: "OK"},
-		ds: []DownStatus{
+	assert.Equal(t,
+		StartupStatus{bootState: "OK"},
+		ans.startup)
+	assert.Equal(t,
+		[]DownStatus{
 			{id: "16", lock: "Locked", mod: "QAM256", freq: 549000000, power: -4.6, snr: 38.8, corr: 204, uncorr: 443},
 			{id: "1", lock: "Locked", mod: "QAM256", freq: 459000000, power: -0.2, snr: 42.1, corr: 984, uncorr: 3588},
 			{id: "2", lock: "Locked", mod: "QAM256", freq: 465000000, power: -0.4, snr: 41.9, corr: 1050, uncorr: 3613},
@@ -34,5 +36,12 @@ func TestScrape(t *testing.T) {
 			{id: "14", lock: "Locked", mod: "QAM256", freq: 537000000, power: -3.5, snr: 39.6, corr: 894, uncorr: 3257},
 			{id: "15", lock: "Locked", mod: "QAM256", freq: 543000000, power: -4.1, snr: 39.3, corr: 1096, uncorr: 4190},
 			{id: "17", lock: "Locked", mod: "QAM256", freq: 555000000, power: -5.2, snr: 38.2, corr: 1013, uncorr: 3879},
-		}}, ans)
+		}, ans.ds)
+
+	assert.Equal(t,
+		[]UpStatus{
+			{num: "1", id: "57", lock: "Locked", chtype: "SC-QAM", width: 26000000, freq: 6400000, power: 50},
+			{num: "2", id: "58", lock: "Locked", chtype: "SC-QAM", width: 19200000, freq: 6400000, power: 48},
+		},
+		ans.us)
 }
