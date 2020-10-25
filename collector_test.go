@@ -26,6 +26,15 @@ func TestScrape(t *testing.T) {
 			{id: "5", lock: "Locked", mod: "QAM256", freq: 483000000, power: -1, snr: math.NaN(), corr: 962, uncorr: 3633},
 			{id: "6", lock: "Locked", mod: "QAM256", freq: 489000000, power: -1, snr: math.NaN(), corr: 1014, uncorr: 3502},
 			{id: "7", lock: "Locked", mod: "QAM256", freq: 495000000, power: -1, snr: math.NaN(), corr: 1032, uncorr: 4042},
+			{id: "8", lock: "Locked", mod: "QAM256", freq: 489000000, power: -1, snr: math.NaN(), corr: 1014, uncorr: 3502},
+			{id: "9", lock: "Locked", mod: "QAM256", freq: 489000000, power: -1, snr: math.NaN(), corr: 1014, uncorr: 3502},
+			{id: "10", lock: "Locked", mod: "QAM256", freq: 489000000, power: -1, snr: math.NaN(), corr: 1014, uncorr: 3502},
+			{id: "11", lock: "Locked", mod: "QAM256", freq: 459000000, power: -0.2, snr: math.NaN(), corr: 984, uncorr: 3588},
+			{id: "12", lock: "Locked", mod: "QAM256", freq: 465000000, power: -0.4, snr: math.NaN(), corr: 1050, uncorr: 3613},
+			{id: "13", lock: "Locked", mod: "QAM256", freq: 471000000, power: -0.6, snr: math.NaN(), corr: 867, uncorr: 3231},
+			{id: "14", lock: "Locked", mod: "QAM256", freq: 477000000, power: -0.7, snr: math.NaN(), corr: 885, uncorr: 3630},
+			{id: "15", lock: "Locked", mod: "QAM256", freq: 483000000, power: -1, snr: math.NaN(), corr: 962, uncorr: 3633},
+			{id: "17", lock: "Locked", mod: "QAM256", freq: 495000000, power: -1, snr: math.NaN(), corr: 1032, uncorr: 4042},
 		},
 	}, ans)
 
