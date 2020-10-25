@@ -12,9 +12,23 @@ type CableModemCollector struct {
 
 type ModemStatus struct {
 	startup StartupStatus
+	ds [] DownStatus
 }
 type StartupStatus struct {
 	bootState string
+}
+
+type DownStatus struct {
+
+	id string
+    lock string
+	mod string
+	freg int64
+	power float32
+	snr float32
+	corr int64
+	uncorr int64
+
 }
 
 func scrape(reader io.Reader) ModemStatus {
@@ -24,13 +38,15 @@ func scrape(reader io.Reader) ModemStatus {
 	}
 	tables := doc.Find("table")
     startup := tables.Filter("table:has(th:contains('Startup Procedure'))")
-    startupStatus := parseStartupStatus(startup)
-    log.Print(startupStatus)
+    ds := tables.Filter("table:has(th:contains('Downstream Bonded Channels'))")
 
 	return ModemStatus{
-		startup: startupStatus,
+		startup: parseStartupStatus(startup),
+		ds: parseDs(ds),
 	}
 }
+
+
 // Procedure Status Comment
 type Psc struct {
 	p string
@@ -56,6 +72,20 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	}
 
 }
+
+func parseDs(table *goquery.Selection) []DownStatus {
+	rows := table.Find("tr:has(td)").Filter("tr:not(:has(td strong))")
+	ds :=  make([]DownStatus, rows.Length(), 32)
+	rows.Each(func(i int, s *goquery.Selection) {
+		cells := s.Find("td")
+		ds[i] = DownStatus{
+			id: cells.Get(0).FirstChild.Data,
+		}
+	})
+    return ds
+}
+
+
 func (cc CableModemCollector) Collect(ch chan<- prometheus.Metric) {
 
    //ms = scrape("http://192.168.100.1")
