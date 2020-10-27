@@ -19,9 +19,10 @@ type ModemStatus struct {
 	us      []UpStatus
 }
 type StartupStatus struct {
-	bootState string
 	acquire   string
-	downFreq int
+	connState string
+	bootState string
+	downFreq  int
 }
 
 type DownStatus struct {
@@ -86,9 +87,10 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		})
 	}
 	return StartupStatus{
-		bootState: m["Boot State"].s,
 		acquire:   m["Acquire Downstream Channel"].c,
-		downFreq:   hz(m["Acquire Downstream Channel"].s),
+		downFreq:  hz(m["Acquire Downstream Channel"].s),
+		connState: m["Connectivity State"].s,
+		bootState: m["Boot State"].s,
 	}
 
 }
