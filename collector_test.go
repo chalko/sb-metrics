@@ -16,14 +16,14 @@ func TestScrape_good(t *testing.T) {
 	ans := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
-			acquire:   "Locked",
-			downFreq:  549000000,
-			connState: "OK",
-			bootState: "OK",
-			configFile: "OK",
+			acquire:       "Locked",
+			downFreq:      549000000,
+			connState:     "OK",
+			bootState:     "OK",
+			configFile:    "OK",
 			securityState: "Enabled",
-			securityType: "BPI+",
-			docsisAccess: "Allowed",
+			securityType:  "BPI+",
+			docsisAccess:  "Allowed",
 		},
 		ans.startup)
 	assert.Equal(t,
@@ -63,13 +63,13 @@ func TestScrape_down(t *testing.T) {
 	ans := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
-			acquire:   "In Progress",
-			connState: "In Progress",
-			bootState: "In Progress",
-			configFile: "In Progress",
+			acquire:       "In Progress",
+			connState:     "In Progress",
+			bootState:     "In Progress",
+			configFile:    "In Progress",
 			securityState: "Disabled",
-			securityType: "Disabled",
-			docsisAccess: "Denied",
+			securityType:  "Disabled",
+			docsisAccess:  "Denied",
 		},
 
 		ans.startup)

@@ -91,14 +91,14 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		})
 	}
 	return StartupStatus{
-		acquire:   m["Acquire Downstream Channel"].c,
-		downFreq:  hz(m["Acquire Downstream Channel"].s),
-		connState: m["Connectivity State"].s,
-		bootState: m["Boot State"].s,
-		configFile: m["Configuration File"].s,
+		acquire:       m["Acquire Downstream Channel"].c,
+		downFreq:      hz(m["Acquire Downstream Channel"].s),
+		connState:     m["Connectivity State"].s,
+		bootState:     m["Boot State"].s,
+		configFile:    m["Configuration File"].s,
 		securityState: m["Security"].s,
-		securityType: m["Security"].c,
-		docsisAccess: m["DOCSIS Network Access Enabled"].s,
+		securityType:  m["Security"].c,
+		docsisAccess:  m["DOCSIS Network Access Enabled"].s,
 	}
 
 }
