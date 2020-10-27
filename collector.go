@@ -75,7 +75,6 @@ type Psc struct {
 }
 
 func parseStartupStatus(table *goquery.Selection) StartupStatus {
-
 	rows := nonHeaderRows(table)
 	m := make(map[string]Psc, rows.Length())
 	if rows.Length() > 0 {
