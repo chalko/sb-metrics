@@ -71,15 +71,16 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 
 	rows := nonHeaderRows(table)
 	m := make(map[string]Psc, rows.Length())
-	rows.Each(func(i int, s *goquery.Selection) {
-		cells := s.Find("td")
-		psc := Psc{
-			p: cells.Get(0).FirstChild.Data,
-			s: cells.Get(1).FirstChild.Data,
-		}
-		m[psc.p] = psc
-	})
-
+	if rows.Length() > 0 {
+		rows.Each(func(i int, s *goquery.Selection) {
+			cells := s.Find("td")
+			psc := Psc{
+				p: cells.Get(0).FirstChild.Data,
+				s: cells.Get(1).FirstChild.Data,
+			}
+			m[psc.p] = psc
+		})
+	}
 	return StartupStatus{
 		bootState: m["Boot State"].s,
 	}
@@ -93,37 +94,41 @@ func nonHeaderRows(table *goquery.Selection) *goquery.Selection {
 func parseDs(table *goquery.Selection) []DownStatus {
 	rows := nonHeaderRows(table)
 	ds := make([]DownStatus, rows.Length())
-	rows.Each(func(i int, s *goquery.Selection) {
-		cells := s.Find("td")
-		ds[i] = DownStatus{
-			id:     text(cells, 0),
-			lock:   text(cells, 1),
-			mod:    text(cells, 2),
-			freq:   hz(text(cells, 3)),
-			power:  float(text(cells, 4), " dBmV"),
-			snr:    float(text(cells, 5), " dB"),
-			corr:   corr(text(cells, 6)),
-			uncorr: corr(text(cells, 7)),
-		}
-	})
+	if rows.Length() > 0 {
+		rows.Each(func(i int, s *goquery.Selection) {
+			cells := s.Find("td")
+			ds[i] = DownStatus{
+				id:     text(cells, 0),
+				lock:   text(cells, 1),
+				mod:    text(cells, 2),
+				freq:   hz(text(cells, 3)),
+				power:  float(text(cells, 4), " dBmV"),
+				snr:    float(text(cells, 5), " dB"),
+				corr:   corr(text(cells, 6)),
+				uncorr: corr(text(cells, 7)),
+			}
+		})
+	}
 	return ds
 }
 
 func parseUs(table *goquery.Selection) []UpStatus {
 	rows := nonHeaderRows(table)
 	us := make([]UpStatus, rows.Length())
-	rows.Each(func(i int, s *goquery.Selection) {
-		cells := s.Find("td")
-		us[i] = UpStatus{
-			num:    text(cells, 0),
-			id:     text(cells, 1),
-			lock:   text(cells, 2),
-			chtype: text(cells, 3),
-			width:  hz(text(cells, 4)),
-			freq:   hz(text(cells, 5)),
-			power:  float(text(cells, 6), " dBmV"),
-		}
-	})
+	if rows.Length() > 0 {
+		rows.Each(func(i int, s *goquery.Selection) {
+			cells := s.Find("td")
+			us[i] = UpStatus{
+				num:    text(cells, 0),
+				id:     text(cells, 1),
+				lock:   text(cells, 2),
+				chtype: text(cells, 3),
+				width:  hz(text(cells, 4)),
+				freq:   hz(text(cells, 5)),
+				power:  float(text(cells, 6), " dBmV"),
+			}
+		})
+	}
 	return us
 }
 

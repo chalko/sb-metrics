@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestScrape(t *testing.T) {
+func TestScrape_good(t *testing.T) {
 	reader, err := os.Open(filepath.Join("testdata", "index.html"))
 	if err != nil {
 		log.Fatal(err)
@@ -44,4 +44,15 @@ func TestScrape(t *testing.T) {
 			{num: "2", id: "58", lock: "Locked", chtype: "SC-QAM", width: 19200000, freq: 6400000, power: 48},
 		},
 		ans.us)
+}
+
+func TestScrape_down(t *testing.T) {
+	reader, err := os.Open(filepath.Join("testdata", "status-down.html"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ans := scrape(reader)
+	assert.Equal(t,
+		StartupStatus{bootState: "OK"},
+		ans.startup)
 }
