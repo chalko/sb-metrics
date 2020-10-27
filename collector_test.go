@@ -15,7 +15,7 @@ func TestScrape_good(t *testing.T) {
 	}
 	ans := scrape(reader)
 	assert.Equal(t,
-		StartupStatus{bootState: "OK"},
+		StartupStatus{bootState: "OK", acquire: "Locked"},
 		ans.startup)
 	assert.Equal(t,
 		[]DownStatus{
@@ -53,6 +53,7 @@ func TestScrape_down(t *testing.T) {
 	}
 	ans := scrape(reader)
 	assert.Equal(t,
-		StartupStatus{bootState: "In Progress"},
+		StartupStatus{bootState: "In Progress", acquire: "In Progress"},
+
 		ans.startup)
 }

@@ -20,6 +20,7 @@ type ModemStatus struct {
 }
 type StartupStatus struct {
 	bootState string
+	acquire   string
 }
 
 type DownStatus struct {
@@ -74,7 +75,7 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	if rows.Length() > 0 {
 		rows.Each(func(i int, s *goquery.Selection) {
 			cells := s.Find("td")
-			td := cells.First();
+			td := cells.First()
 			psc := Psc{
 				p: td.Text(),
 				s: td.Next().Text(),
@@ -85,6 +86,7 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	}
 	return StartupStatus{
 		bootState: m["Boot State"].s,
+		acquire:   m["Acquire Downstream Channel"].c,
 	}
 
 }
