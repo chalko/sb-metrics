@@ -74,9 +74,11 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	if rows.Length() > 0 {
 		rows.Each(func(i int, s *goquery.Selection) {
 			cells := s.Find("td")
+			td := cells.First();
 			psc := Psc{
-				p: cells.Get(0).FirstChild.Data,
-				s: cells.Get(1).FirstChild.Data,
+				p: td.Text(),
+				s: td.Next().Text(),
+				c: td.Next().Next().Text(),
 			}
 			m[psc.p] = psc
 		})

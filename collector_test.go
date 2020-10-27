@@ -53,6 +53,6 @@ func TestScrape_down(t *testing.T) {
 	}
 	ans := scrape(reader)
 	assert.Equal(t,
-		StartupStatus{bootState: "OK"},
+		StartupStatus{bootState: "In Progress"},
 		ans.startup)
 }
