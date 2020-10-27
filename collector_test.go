@@ -15,7 +15,7 @@ func TestScrape_good(t *testing.T) {
 	}
 	ans := scrape(reader)
 	assert.Equal(t,
-		StartupStatus{bootState: "OK", acquire: "Locked"},
+		StartupStatus{bootState: "OK", acquire: "Locked", downFreq: 549000000},
 		ans.startup)
 	assert.Equal(t,
 		[]DownStatus{
