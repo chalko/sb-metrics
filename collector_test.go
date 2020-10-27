@@ -20,6 +20,7 @@ func TestScrape_good(t *testing.T) {
 			downFreq:  549000000,
 			connState: "OK",
 			bootState: "OK",
+			configFile: "OK",
 		},
 		ans.startup)
 	assert.Equal(t,
@@ -62,6 +63,7 @@ func TestScrape_down(t *testing.T) {
 			acquire:   "In Progress",
 			connState: "In Progress",
 			bootState: "In Progress",
+			configFile: "In Progress",
 		},
 
 		ans.startup)

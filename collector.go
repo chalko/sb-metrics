@@ -23,6 +23,7 @@ type StartupStatus struct {
 	connState string
 	bootState string
 	downFreq  int
+	configFile string
 }
 
 type DownStatus struct {
@@ -91,6 +92,7 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		downFreq:  hz(m["Acquire Downstream Channel"].s),
 		connState: m["Connectivity State"].s,
 		bootState: m["Boot State"].s,
+		configFile: m["Configuration File"].s,
 	}
 
 }
