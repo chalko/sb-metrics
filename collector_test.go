@@ -21,6 +21,8 @@ func TestScrape_good(t *testing.T) {
 			connState: "OK",
 			bootState: "OK",
 			configFile: "OK",
+			securityState: "Enabled",
+			securityType: "BPI+",
 		},
 		ans.startup)
 	assert.Equal(t,
@@ -64,6 +66,8 @@ func TestScrape_down(t *testing.T) {
 			connState: "In Progress",
 			bootState: "In Progress",
 			configFile: "In Progress",
+			securityState: "Disabled",
+			securityType: "Disabled",
 		},
 
 		ans.startup)

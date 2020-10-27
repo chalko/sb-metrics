@@ -19,11 +19,13 @@ type ModemStatus struct {
 	us      []UpStatus
 }
 type StartupStatus struct {
-	acquire   string
-	connState string
-	bootState string
-	downFreq  int
-	configFile string
+	acquire       string
+	connState     string
+	bootState     string
+	downFreq      int
+	configFile    string
+	securityState string
+	securityType  string
 }
 
 type DownStatus struct {
@@ -93,6 +95,8 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		connState: m["Connectivity State"].s,
 		bootState: m["Boot State"].s,
 		configFile: m["Configuration File"].s,
+		securityState: m["Security"].s,
+		securityType: m["Security"].c,
 	}
 
 }
