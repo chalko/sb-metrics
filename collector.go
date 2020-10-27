@@ -26,6 +26,7 @@ type StartupStatus struct {
 	configFile    string
 	securityState string
 	securityType  string
+	docsisAccess  string
 }
 
 type DownStatus struct {
@@ -97,6 +98,7 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		configFile: m["Configuration File"].s,
 		securityState: m["Security"].s,
 		securityType: m["Security"].c,
+		docsisAccess: m["DOCSIS Network Access Enabled"].s,
 	}
 
 }

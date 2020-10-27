@@ -23,6 +23,7 @@ func TestScrape_good(t *testing.T) {
 			configFile: "OK",
 			securityState: "Enabled",
 			securityType: "BPI+",
+			docsisAccess: "Allowed",
 		},
 		ans.startup)
 	assert.Equal(t,
@@ -68,6 +69,7 @@ func TestScrape_down(t *testing.T) {
 			configFile: "In Progress",
 			securityState: "Disabled",
 			securityType: "Disabled",
+			docsisAccess: "Denied",
 		},
 
 		ans.startup)
