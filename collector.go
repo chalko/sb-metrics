@@ -67,26 +67,23 @@ func scrape(reader io.Reader) ModemStatus {
 	}
 }
 
-// Procedure Status Comment
-type Psc struct {
-	p string
+// Status Comment
+type StatComm struct {
 	s string
 	c string
 }
 
 func parseStartupStatus(table *goquery.Selection) StartupStatus {
 	rows := nonHeaderRows(table)
-	m := make(map[string]Psc, rows.Length())
+	m := make(map[string]StatComm, rows.Length())
 	if rows.Length() > 0 {
 		rows.Each(func(i int, s *goquery.Selection) {
 			cells := s.Find("td")
 			td := cells.First()
-			psc := Psc{
-				p: td.Text(),
+			m[td.Text()] = StatComm{
 				s: td.Next().Text(),
 				c: td.Next().Next().Text(),
 			}
-			m[psc.p] = psc
 		})
 	}
 	return StartupStatus{
