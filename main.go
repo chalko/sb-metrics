@@ -11,7 +11,6 @@ var (
 	addr = flag.String("listen-address", ":8888", "The address to listen on for HTTP requests.")
 )
 
-
 func init() {
 
 }
