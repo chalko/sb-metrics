@@ -13,7 +13,7 @@ func TestScrape_good(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ans := scrape(reader)
+	ans, _ := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
 			acquire:       "Locked",
@@ -60,7 +60,7 @@ func TestScrape_down(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ans := scrape(reader)
+	ans, _ := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
 			acquire:       "In Progress",

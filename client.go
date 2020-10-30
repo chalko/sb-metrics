@@ -2,15 +2,17 @@ package main
 
 import (
 	"github.com/PuerkitoBio/goquery"
-	"github.com/prometheus/client_golang/prometheus"
 	"io"
-	"log"
 	"math"
+	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
-type CableModemCollector struct {
+type CableModemClient struct {
+	connectionString string
+	timeout          time.Duration
 }
 
 type ModemStatus struct {
@@ -50,21 +52,42 @@ type UpStatus struct {
 	power  float64
 }
 
-func scrape(reader io.Reader) ModemStatus {
+func NewCableModemClient(connectionString string, timeout time.Duration) *CableModemClient {
+	return &CableModemClient{
+		connectionString: connectionString,
+		timeout:          timeout,
+	}
+}
+
+func (c *CableModemClient) GetModemStatus() (*ModemStatus, error) {
+	//ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
+	client := http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Get(c.connectionString)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return scrape(resp.Body)
+
+}
+
+func scrape(reader io.Reader) (*ModemStatus, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	tables := doc.Find("table")
 	startup := tables.Filter("table:has(th:contains('Startup Procedure'))")
 	ds := tables.Filter("table:has(th:contains('Downstream Bonded Channels'))")
 	us := tables.Filter("table:has(th:contains('Upstream Bonded Channels'))")
 
-	return ModemStatus{
+	return &ModemStatus{
 		startup: parseStartupStatus(startup),
 		ds:      parseDs(ds),
 		us:      parseUs(us),
-	}
+	}, nil
 }
 
 // Status Comment
@@ -172,10 +195,4 @@ func hz(s string) int {
 func text(cells *goquery.Selection, i int) string {
 	node := cells.Get(i)
 	return node.FirstChild.Data
-}
-
-func (cc CableModemCollector) Collect(ch chan<- prometheus.Metric) {
-
-	//ms = scrape("http://192.168.100.1")
-
 }
