@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	addr = flag.String("listen-address", ":8888", "The address to listen on for HTTP requests.")
-	timeout = flag.Duration("timeoiut", 10 * time.Second,"Timeout to scrape status screen")
-	)
+	addr    = flag.String("listen-address", ":8888", "The address to listen on for HTTP requests.")
+	timeout = flag.Duration("timeoiut", 10*time.Second, "Timeout to scrape status screen")
+)
 
 func init() {
 
@@ -23,8 +23,8 @@ func main() {
 
 	c := NewCableModemClient("http://192.168.100.1", *timeout)
 
-
-	if (c !=nil){}
+	if c != nil {
+	}
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("status.json", func(w http.ResponseWriter, r *http.Request) {
@@ -44,12 +44,11 @@ func main() {
 	}
 }
 
-
-func jsonStatus(c *CableModemClient) ([]byte, error)  {
-	s,err :=c.GetModemStatus()
-	if (err!=nil){
+func jsonStatus(c *CableModemClient) ([]byte, error) {
+	s, err := c.GetModemStatus()
+	if err != nil {
 		return nil, err
 	}
-	return json.MarshalIndent(s,"", "  ")
+	return json.MarshalIndent(s, "", "  ")
 
 }
