@@ -22,7 +22,7 @@ func main() {
 	// The Handler function provides a default handler to expose metrics
 	// via an HTTP server. "/metrics" is the usual endpoint for that.
 
-	log.Printf("starting exporter on %q", addr)
+	log.Printf("starting exporter on %q", *addr)
 	if err := http.ListenAndServe(*addr, mux); err != nil {
 		log.Fatalf("cannot start exporter: %s", err)
 	}
