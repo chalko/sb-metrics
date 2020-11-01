@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"github.com/PuerkitoBio/goquery"
@@ -16,19 +16,19 @@ type CableModemClient struct {
 }
 
 type ModemStatus struct {
-	startup StartupStatus
-	ds      []DownStatus
-	us      []UpStatus
+	Startup StartupStatus
+	Ds      []DownStatus
+	Us      []UpStatus
 }
 type StartupStatus struct {
-	acquire       string
-	connState     string
-	bootState     string
-	downFreq      int
-	configFile    string
-	securityState string
-	securityType  string
-	docsisAccess  string
+	Acquire       string
+	ConnState     string
+	BootState     string
+	DownFreq      int
+	ConfigFile    string
+	SecurityState string
+	SecurityType  string
+	DocsisAccess  string
 }
 
 type DownStatus struct {
@@ -59,34 +59,34 @@ func NewCableModemClient(connectionString string, timeout time.Duration) *CableM
 	}
 }
 
-func (c *CableModemClient) GetModemStatus() (*ModemStatus, error) {
+func (c *CableModemClient) GetModemStatus() (ModemStatus, error) {
 	//ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	client := http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: c.timeout,
 	}
 	resp, err := client.Get(c.connectionString)
 	if err != nil {
-		return nil, err
+		return ModemStatus{}, err
 	}
 	defer resp.Body.Close()
 	return scrape(resp.Body)
 
 }
 
-func scrape(reader io.Reader) (*ModemStatus, error) {
+func scrape(reader io.Reader) (ModemStatus, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
 	if err != nil {
-		return nil, err
+		return ModemStatus{}, err
 	}
 	tables := doc.Find("table")
 	startup := tables.Filter("table:has(th:contains('Startup Procedure'))")
 	ds := tables.Filter("table:has(th:contains('Downstream Bonded Channels'))")
 	us := tables.Filter("table:has(th:contains('Upstream Bonded Channels'))")
 
-	return &ModemStatus{
-		startup: parseStartupStatus(startup),
-		ds:      parseDs(ds),
-		us:      parseUs(us),
+	return ModemStatus{
+		Startup: parseStartupStatus(startup),
+		Ds:      parseDs(ds),
+		Us:      parseUs(us),
 	}, nil
 }
 
@@ -110,14 +110,14 @@ func parseStartupStatus(table *goquery.Selection) StartupStatus {
 		})
 	}
 	return StartupStatus{
-		acquire:       m["Acquire Downstream Channel"].c,
-		downFreq:      hz(m["Acquire Downstream Channel"].s),
-		connState:     m["Connectivity State"].s,
-		bootState:     m["Boot State"].s,
-		configFile:    m["Configuration File"].s,
-		securityState: m["Security"].s,
-		securityType:  m["Security"].c,
-		docsisAccess:  m["DOCSIS Network Access Enabled"].s,
+		Acquire:       m["Acquire Downstream Channel"].c,
+		DownFreq:      hz(m["Acquire Downstream Channel"].s),
+		ConnState:     m["Connectivity State"].s,
+		BootState:     m["Boot State"].s,
+		ConfigFile:    m["Configuration File"].s,
+		SecurityState: m["Security"].s,
+		SecurityType:  m["Security"].c,
+		DocsisAccess:  m["DOCSIS Network Access Enabled"].s,
 	}
 
 }

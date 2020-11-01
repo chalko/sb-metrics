@@ -7,12 +7,16 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
+	"sb-metrics/client"
 	"time"
 )
 
 var (
 	addr    = flag.String("listen-address", ":8888", "The address to listen on for HTTP requests.")
-	timeout = flag.Duration("timeoiut", 10*time.Second, "Timeout to scrape status screen")
+	timeout = flag.Duration(
+		"timeout",
+		30*time.Second,
+		"Timeout to scrape status screen")
 )
 
 func init() {
@@ -21,17 +25,19 @@ func init() {
 
 func main() {
 
-	c := NewCableModemClient("http://192.168.100.1", *timeout)
+	c := client.NewCableModemClient("http://192.168.100.1", *timeout)
 
 	if c != nil {
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", promhttp.Handler())
-	mux.HandleFunc("status.json", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/status.json", func(w http.ResponseWriter, r *http.Request) {
 
 		s, err := jsonStatus(c)
 		if err != nil {
-			panic(err)
+      w.WriteHeader(http.StatusInternalServerError)
+            log.Println(err)
+			http.Error(w, "my own error message", http.StatusInternalServerError)
 		}
 		fmt.Fprintf(w, string(s))
 	})
@@ -44,7 +50,7 @@ func main() {
 	}
 }
 
-func jsonStatus(c *CableModemClient) ([]byte, error) {
+func jsonStatus(c *client.CableModemClient) ([]byte, error) {
 	s, err := c.GetModemStatus()
 	if err != nil {
 		return nil, err

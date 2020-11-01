@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -25,7 +25,7 @@ func TestScrape_good(t *testing.T) {
 			securityType:  "BPI+",
 			docsisAccess:  "Allowed",
 		},
-		ans.startup)
+		ans.Startup)
 	assert.Equal(t,
 		[]DownStatus{
 			{id: "16", lock: "Locked", mod: "QAM256", freq: 549000000, power: -4.6, snr: 38.8, corr: 204, uncorr: 443},
@@ -72,5 +72,5 @@ func TestScrape_down(t *testing.T) {
 			docsisAccess:  "Denied",
 		},
 
-		ans.startup)
+		ans.Startup)
 }
