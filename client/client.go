@@ -32,24 +32,24 @@ type StartupStatus struct {
 }
 
 type DownStatus struct {
-	id     string
-	lock   string
-	mod    string
-	freq   int
-	power  float64
-	snr    float64
-	corr   int
-	uncorr int
+	Id     string
+	Lock   string
+	Mod    string
+	Freq   int
+	Power  float64
+	Snr    float64
+	Corr   int
+	Uncorr int
 }
 
 type UpStatus struct {
-	num    string
-	id     string
-	lock   string
-	chtype string
-	width  int
-	freq   int
-	power  float64
+	Num    string
+	Id     string
+	Lock   string
+	ChType string
+	Width  int
+	Freq   int
+	Power  float64
 }
 
 func NewCableModemClient(connectionString string, timeout time.Duration) *CableModemClient {
@@ -133,14 +133,14 @@ func parseDs(table *goquery.Selection) []DownStatus {
 		rows.Each(func(i int, s *goquery.Selection) {
 			cells := s.Find("td")
 			ds[i] = DownStatus{
-				id:     text(cells, 0),
-				lock:   text(cells, 1),
-				mod:    text(cells, 2),
-				freq:   hz(text(cells, 3)),
-				power:  float(text(cells, 4), " dBmV"),
-				snr:    float(text(cells, 5), " dB"),
-				corr:   corr(text(cells, 6)),
-				uncorr: corr(text(cells, 7)),
+				Id:     text(cells, 0),
+				Lock:   text(cells, 1),
+				Mod:    text(cells, 2),
+				Freq:   hz(text(cells, 3)),
+				Power:  float(text(cells, 4), " dBmV"),
+				Snr:    float(text(cells, 5), " dB"),
+				Corr:   corr(text(cells, 6)),
+				Uncorr: corr(text(cells, 7)),
 			}
 		})
 	}
@@ -154,13 +154,13 @@ func parseUs(table *goquery.Selection) []UpStatus {
 		rows.Each(func(i int, s *goquery.Selection) {
 			cells := s.Find("td")
 			us[i] = UpStatus{
-				num:    text(cells, 0),
-				id:     text(cells, 1),
-				lock:   text(cells, 2),
-				chtype: text(cells, 3),
-				width:  hz(text(cells, 4)),
-				freq:   hz(text(cells, 5)),
-				power:  float(text(cells, 6), " dBmV"),
+				Num:    text(cells, 0),
+				Id:     text(cells, 1),
+				Lock:   text(cells, 2),
+				ChType: text(cells, 3),
+				Width:  hz(text(cells, 4)),
+				Freq:   hz(text(cells, 5)),
+				Power:  float(text(cells, 6), " dBmV"),
 			}
 		})
 	}
