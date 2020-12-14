@@ -34,18 +34,31 @@ var (
 		nil, nil,
 	)
 
-	downLabels = []string{"id"}
+	channelLabels = []string{"id"}
 	// down status Metrics
 	downFreq = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_freq"),
 		"The downstream frequency",
-		downLabels, nil,
+		channelLabels, nil,
 	)
 
 	downPower = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_power"),
 		"The downstream power level",
-		downLabels, nil,
+		channelLabels, nil,
+	)
+
+	// upStream metrids
+	upFreq = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "up_freq"),
+		"The upstream frequency",
+		channelLabels, nil,
+	)
+
+	upPower = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "up_power"),
+		"The upstream power level",
+		channelLabels, nil,
 	)
 )
 
@@ -58,6 +71,10 @@ func (c *CableModemClient) Describe(ch chan<- *prometheus.Desc) {
 	ch <- up
 	ch <- acquire
 	ch <- downChannel
+	ch <- downFreq
+	ch <- downPower
+	ch <- upFreq
+	ch <- upPower
 }
 func (c *CableModemClient) Collect(ch chan<- prometheus.Metric) {
 	status, err := c.GetModemStatus()
@@ -73,7 +90,9 @@ func (c *CableModemClient) Collect(ch chan<- prometheus.Metric) {
 	for _, ds := range status.Ds {
 		ds.Collect(ch)
 	}
-
+	for _, us := range status.Us {
+		us.Collect(ch)
+	}
 }
 
 type ModemStatus struct {
@@ -131,6 +150,12 @@ type UpStatus struct {
 	Width  int
 	Freq   int
 	Power  float64
+}
+
+func (us *UpStatus) Collect(ch chan<- prometheus.Metric) {
+	id := us.Id
+	ch <- prometheus.MustNewConstMetric(upFreq, prometheus.GaugeValue, float64(us.Freq), id)
+	ch <- prometheus.MustNewConstMetric(upPower, prometheus.GaugeValue, us.Power, id)
 }
 
 func NewCableModemClient(connectionString string, timeout time.Duration) *CableModemClient {
