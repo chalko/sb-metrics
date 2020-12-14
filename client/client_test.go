@@ -9,21 +9,21 @@ import (
 )
 
 func TestScrape_good(t *testing.T) {
-	reader, err := os.Open(filepath.Join("testdata", "index.html"))
+	reader, err := os.Open(filepath.Join("../testdata", "index.html"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	ans, _ := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
-			acquire:       "Locked",
-			downFreq:      549000000,
-			connState:     "OK",
-			bootState:     "OK",
-			configFile:    "OK",
-			securityState: "Enabled",
-			securityType:  "BPI+",
-			docsisAccess:  "Allowed",
+			Acquire:       "Locked",
+			DownFreq:      549000000,
+			ConnState:     "OK",
+			BootState:     "OK",
+			ConfigFile:    "OK",
+			SecurityState: "Enabled",
+			SecurityType:  "BPI+",
+			DocsisAccess:  "Allowed",
 		},
 		ans.Startup)
 	assert.Equal(t,
@@ -45,31 +45,31 @@ func TestScrape_good(t *testing.T) {
 			{id: "14", lock: "Locked", mod: "QAM256", freq: 537000000, power: -3.5, snr: 39.6, corr: 894, uncorr: 3257},
 			{id: "15", lock: "Locked", mod: "QAM256", freq: 543000000, power: -4.1, snr: 39.3, corr: 1096, uncorr: 4190},
 			{id: "17", lock: "Locked", mod: "QAM256", freq: 555000000, power: -5.2, snr: 38.2, corr: 1013, uncorr: 3879},
-		}, ans.ds)
+		}, ans.Ds)
 
 	assert.Equal(t,
 		[]UpStatus{
 			{num: "1", id: "57", lock: "Locked", chtype: "SC-QAM", width: 26000000, freq: 6400000, power: 50},
 			{num: "2", id: "58", lock: "Locked", chtype: "SC-QAM", width: 19200000, freq: 6400000, power: 48},
 		},
-		ans.us)
+		ans.Us)
 }
 
 func TestScrape_down(t *testing.T) {
-	reader, err := os.Open(filepath.Join("testdata", "status-down.html"))
+	reader, err := os.Open(filepath.Join("../testdata", "status-down.html"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	ans, _ := scrape(reader)
 	assert.Equal(t,
 		StartupStatus{
-			acquire:       "In Progress",
-			connState:     "In Progress",
-			bootState:     "In Progress",
-			configFile:    "In Progress",
-			securityState: "Disabled",
-			securityType:  "Disabled",
-			docsisAccess:  "Denied",
+			Acquire:       "In Progress",
+			ConnState:     "In Progress",
+			BootState:     "In Progress",
+			ConfigFile:    "In Progress",
+			SecurityState: "Disabled",
+			SecurityType:  "Disabled",
+			DocsisAccess:  "Denied",
 		},
 
 		ans.Startup)
