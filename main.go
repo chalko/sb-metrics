@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
@@ -27,9 +28,9 @@ func main() {
 
 	c := client.NewCableModemClient("http://192.168.100.1", *timeout)
 
-	if c != nil {
-	}
+	prometheus.MustRegister(c)
 	mux := http.NewServeMux()
+
 	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("/status.json", func(w http.ResponseWriter, r *http.Request) {
 

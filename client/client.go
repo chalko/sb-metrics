@@ -2,7 +2,9 @@ package client
 
 import (
 	"github.com/PuerkitoBio/goquery"
+	"github.com/prometheus/client_golang/prometheus"
 	"io"
+	"log"
 	"math"
 	"net/http"
 	"strconv"
@@ -10,9 +12,68 @@ import (
 	"time"
 )
 
+const namespace = "cable_modem"
+
+var (
+
+	// Metrics
+	up = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "up"),
+		"Has the cable modem is up",
+		nil, nil,
+	)
+	// Startup Status
+	acquire = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "acquire"),
+		"Has the cable modem acquired a lock",
+		nil, nil,
+	)
+	downChannel = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_channel"),
+		"The downstream channel frequency in Hz",
+		nil, nil,
+	)
+
+	downLabels = []string{"id"}
+	// down status Metrics
+	downFreq = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_freq"),
+		"The downstream frequency",
+		downLabels, nil,
+	)
+
+	downPower = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_power"),
+		"The downstream power level",
+		downLabels, nil,
+	)
+)
+
 type CableModemClient struct {
 	connectionString string
 	timeout          time.Duration
+}
+
+func (c *CableModemClient) Describe(ch chan<- *prometheus.Desc) {
+	ch <- up
+	ch <- acquire
+	ch <- downChannel
+}
+func (c *CableModemClient) Collect(ch chan<- prometheus.Metric) {
+	status, err := c.GetModemStatus()
+	if err != nil {
+		ch <- prometheus.MustNewConstMetric(
+			up, prometheus.GaugeValue, 0,
+		)
+		log.Println(err)
+		return
+	}
+	ch <- prometheus.MustNewConstMetric(up, prometheus.GaugeValue, 1)
+	status.Startup.Collect(ch)
+	for _, ds := range status.Ds {
+		ds.Collect(ch)
+	}
+
 }
 
 type ModemStatus struct {
@@ -20,6 +81,7 @@ type ModemStatus struct {
 	Ds      []DownStatus
 	Us      []UpStatus
 }
+
 type StartupStatus struct {
 	Acquire       string
 	ConnState     string
@@ -31,6 +93,19 @@ type StartupStatus struct {
 	DocsisAccess  string
 }
 
+func (s *StartupStatus) Collect(ch chan<- prometheus.Metric) {
+	ch <- prometheus.MustNewConstMetric(acquire, prometheus.GaugeValue, s.isAcquired())
+	ch <- prometheus.MustNewConstMetric(downChannel, prometheus.GaugeValue, float64(s.DownFreq))
+}
+
+func (s *StartupStatus) isAcquired() float64 {
+	var locked float64 = 0
+	if s.Acquire == "Locked" {
+		locked = 1
+	}
+	return locked
+}
+
 type DownStatus struct {
 	Id     string
 	Lock   string
@@ -40,6 +115,12 @@ type DownStatus struct {
 	Snr    float64
 	Corr   int
 	Uncorr int
+}
+
+func (ds *DownStatus) Collect(ch chan<- prometheus.Metric) {
+	id := ds.Id
+	ch <- prometheus.MustNewConstMetric(downFreq, prometheus.GaugeValue, float64(ds.Freq), id)
+	ch <- prometheus.MustNewConstMetric(downPower, prometheus.GaugeValue, ds.Power, id)
 }
 
 type UpStatus struct {
