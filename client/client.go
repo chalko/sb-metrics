@@ -48,6 +48,17 @@ var (
 		channelLabels, nil,
 	)
 
+	downCorr = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_corr"),
+		"The downstream correctable errors",
+		channelLabels, nil,
+	)
+	downUncorr = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_uncorr"),
+		"The downstream uncorrectable errors",
+		channelLabels, nil,
+	)
+
 	// upStream metrids
 	upFreq = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "up_freq"),
@@ -73,6 +84,8 @@ func (c *CableModemClient) Describe(ch chan<- *prometheus.Desc) {
 	ch <- downChannel
 	ch <- downFreq
 	ch <- downPower
+	ch <- downCorr
+	ch <- downUncorr
 	ch <- upFreq
 	ch <- upPower
 }
@@ -140,6 +153,8 @@ func (ds *DownStatus) Collect(ch chan<- prometheus.Metric) {
 	id := ds.Id
 	ch <- prometheus.MustNewConstMetric(downFreq, prometheus.GaugeValue, float64(ds.Freq), id)
 	ch <- prometheus.MustNewConstMetric(downPower, prometheus.GaugeValue, ds.Power, id)
+	ch <- prometheus.MustNewConstMetric(downCorr, prometheus.CounterValue, float64(ds.Corr), id)
+	ch <- prometheus.MustNewConstMetric(downUncorr, prometheus.CounterValue, float64(ds.Uncorr), id)
 }
 
 type UpStatus struct {
