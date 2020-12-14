@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/chalko/sb-metrics/client"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
-	"sb-metrics/client"
 	"time"
 )
 
@@ -36,8 +36,8 @@ func main() {
 
 		s, err := jsonStatus(c)
 		if err != nil {
-      w.WriteHeader(http.StatusInternalServerError)
-            log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
 			http.Error(w, "my own error message", http.StatusInternalServerError)
 		}
 		fmt.Fprintf(w, string(s))
