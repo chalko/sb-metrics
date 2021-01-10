@@ -14,10 +14,11 @@ go_library(
 go_test(
     name = "client_test",
     srcs = ["client_test.go"],
+    data = [
+        "//testdata:index.html",
+        "//testdata:status-down.html",
+    ],
     embed = [":client"],
+    importpath = "github.com/chalko/sb-metrics/client",
     deps = ["@com_github_stretchr_testify//assert:go_default_library"],
-    data =[
-      "//testdata:index.html",
-      "//testdata:status-down.html",
-    ]
 )

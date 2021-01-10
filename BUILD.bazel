@@ -24,19 +24,17 @@ go_binary(
 )
 
 go_image(
-  name="cmm",
-  binary=":sb-metrics",
-  repository="index.docker.io/chalko",
+    name = "cmm",
+    binary = ":sb-metrics",
 )
 
 load("@io_bazel_rules_docker//container:container.bzl", "container_push")
 
 container_push(
-   name = "push-cmm",
-   image = ":cmm",
-   format = "Docker",
-   registry = "index.docker.io",
-   repository = "chalko/cmm",
-   tag = "dev",
+    name = "push-cmm",
+    image = ":cmm",
+    format = "Docker",
+    registry = "index.docker.io",
+    repository = "chalko/cmm",
+    tag = "latest",
 )
-
