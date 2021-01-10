@@ -19,7 +19,7 @@ var (
 	// Metrics
 	up = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "up"),
-		"Has the cable modem is up",
+		"Has the cable mode successfully connected",
 		nil, nil,
 	)
 	// Startup Status
@@ -30,7 +30,7 @@ var (
 	)
 	downChannel = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_channel"),
-		"The downstream channel frequency in Hz",
+		"The startup downstream channel frequency in Hz",
 		nil, nil,
 	)
 
@@ -38,16 +38,20 @@ var (
 	// down status Metrics
 	downFreq = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_freq"),
-		"The downstream frequency",
+		"The downstream frequency in Hz",
 		channelLabels, nil,
 	)
 
 	downPower = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_power"),
-		"The downstream power level",
+		"The downstream power level in dBmV",
 		channelLabels, nil,
 	)
-
+	downSnr = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "down_snr"),
+		"The downstream SNR/MER in dB",
+		channelLabels, nil,
+	)
 	downCorr = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "down_corr"),
 		"The downstream correctable errors",
@@ -59,16 +63,16 @@ var (
 		channelLabels, nil,
 	)
 
-	// upStream metrids
+	// up stream metrics
 	upFreq = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "up_freq"),
-		"The upstream frequency",
+		"The upstream frequency in Hz",
 		channelLabels, nil,
 	)
 
 	upPower = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "up_power"),
-		"The upstream power level",
+		"The upstream power level in dBmV",
 		channelLabels, nil,
 	)
 )
@@ -153,6 +157,7 @@ func (ds *DownStatus) Collect(ch chan<- prometheus.Metric) {
 	id := ds.Id
 	ch <- prometheus.MustNewConstMetric(downFreq, prometheus.GaugeValue, float64(ds.Freq), id)
 	ch <- prometheus.MustNewConstMetric(downPower, prometheus.GaugeValue, ds.Power, id)
+	ch <- prometheus.MustNewConstMetric(downSnr, prometheus.GaugeValue, ds.Snr, id)
 	ch <- prometheus.MustNewConstMetric(downCorr, prometheus.CounterValue, float64(ds.Corr), id)
 	ch <- prometheus.MustNewConstMetric(downUncorr, prometheus.CounterValue, float64(ds.Uncorr), id)
 }

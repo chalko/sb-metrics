@@ -71,6 +71,5 @@ func TestScrape_down(t *testing.T) {
 			SecurityType:  "Disabled",
 			DocsisAccess:  "Denied",
 		},
-
 		ans.Startup)
 }
