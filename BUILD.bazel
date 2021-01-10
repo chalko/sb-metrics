@@ -24,11 +24,25 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
+
+go_binary(
+    name = "sb-metrics_arm",
+    embed = [":sb-metrics_lib"],
+    goos = "linux",
+    goarch ="arm",
+    visibility = ["//visibility:public"],
+)
+
 go_image(
     name = "cmm",
     binary = ":sb-metrics",
 )
 
+go_image(
+    name = "cmm_arm",
+    binary = ":sb-metrics_arm",
+    architecture ="arm",
+)
 
 
 container_push(
