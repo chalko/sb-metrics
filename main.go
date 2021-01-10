@@ -56,6 +56,5 @@ func jsonStatus(c *client.CableModemClient) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return json.MarshalIndent(s, "", "  ")
-
+	return json.MarshalIndent(s, "", "  "), nil
 }
